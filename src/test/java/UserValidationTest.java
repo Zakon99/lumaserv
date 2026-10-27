@@ -1,6 +1,7 @@
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
+import userapi.dto.CreateUserRequest;
 import userapi.model.User;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -18,20 +19,14 @@ class UserValidationTest {
     private final String testUserMail = "max@emailadresse.com";
 
     @Test
-    void emailIsNull_isInvalid() {
-        User user = new User();
-        user.setName(testUserName);
-        user.setEmail(null);
-
-        assertFalse(validator.validate(user).isEmpty());
+    void emailIsNull() {
+        CreateUserRequest request = new CreateUserRequest(testUserName, null);
+        assertFalse(validator.validate(request).isEmpty());
     }
 
     @Test
-    void nameIsNull_isInvalid() {
-        User user = new User();
-        user.setName(null);
-        user.setEmail(testUserMail);
-
-        assertFalse(validator.validate(user).isEmpty());
+    void userNameIsNull() {
+        CreateUserRequest request = new CreateUserRequest(null, testUserMail);
+        assertFalse(validator.validate(request).isEmpty());
     }
 }

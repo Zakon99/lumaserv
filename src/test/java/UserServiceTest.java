@@ -1,7 +1,10 @@
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import userapi.model.User;
+import userapi.UserApplication;
+import userapi.dto.CreateUserRequest;
+import userapi.dto.UserResponse;
 import userapi.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,7 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *
  * @author MDzan
  */
-@SpringBootTest
+@SpringBootTest(classes = UserApplication.class)
+@Transactional
 class UserServiceTest {
 
     @Autowired
@@ -23,28 +27,22 @@ class UserServiceTest {
 
     @Test
     void createUser() {
-        User user = new User();
-        user.setName(testUserName);
-        user.setEmail(testUserMail);
+        UserResponse savedUser = userService.createUser(
+                new CreateUserRequest(testUserName, testUserMail)
+        );
 
-        User savedUser = userService.createUser(user);
-
-        assertNotNull(savedUser.getId());
-        assertEquals(testUserName, savedUser.getName());
-        assertEquals(testUserMail, savedUser.getEmail());
+        assertNotNull(savedUser.id());
+        assertEquals(testUserName, savedUser.name());
     }
 
     @Test
     void getUserById() {
-        User user = new User();
+        UserResponse saved = userService.createUser(
+                new CreateUserRequest(testUserName, testUserMail)
+        );
 
-        user.setName(testUserName);
-        user.setEmail(testUserMail);
-        User savedUser = userService.createUser(user);
+        UserResponse foundUser = userService.getUserById(saved.id());
 
-        User foundUser = userService.getUserById(savedUser.getId());
-
-        assertEquals(testUserName, foundUser.getName());
-        assertEquals(testUserMail, savedUser.getEmail());
+        assertEquals(testUserName, foundUser.name());
     }
 }

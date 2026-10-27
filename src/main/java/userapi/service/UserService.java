@@ -3,6 +3,8 @@ package userapi.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import userapi.dto.CreateUserRequest;
+import userapi.dto.UserResponse;
 import userapi.exception.EmailExistsException;
 import userapi.exception.UserNotFoundException;
 import userapi.model.User;
@@ -25,21 +27,25 @@ public class UserService {
      * @return abgefragte User
      */
     @Transactional
-    public User getUserById(final Long id) {
+    public UserResponse getUserById(final Long id) {
         return userRepository.findById(id)
+                .map(UserResponse::from)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     /**
      * Methode zum anlegen eines neuen Users.
-     * @param user der anzulegende User
+     * @param request Request zum anlegen eines Users
      * @return der neu angelegte User
      */
     @Transactional
-    public User createUser(final User user) {
-        if(userRepository.existsByEmail(user.getEmail())){
-            throw new EmailExistsException(user.getEmail());
+    public UserResponse createUser(final CreateUserRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new EmailExistsException(request.email());
         }
-        return userRepository.save(user);
+        User user = new User();
+        user.setName(request.name());
+        user.setEmail(request.email());
+        return UserResponse.from(userRepository.save(user));
     }
 }
