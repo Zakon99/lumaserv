@@ -1,5 +1,6 @@
 package userapi.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import userapi.exception.EmailExistsException;
@@ -23,6 +24,7 @@ public class UserService {
      * @param id die id des Users
      * @return abgefragte User
      */
+    @Transactional
     public User getUserById(final Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -33,6 +35,7 @@ public class UserService {
      * @param user der anzulegende User
      * @return der neu angelegte User
      */
+    @Transactional
     public User createUser(final User user) {
         if(userRepository.existsByEmail(user.getEmail())){
             throw new EmailExistsException(user.getEmail());
