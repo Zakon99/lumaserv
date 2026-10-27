@@ -1,6 +1,7 @@
 package userapi.controller;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class UserController {
     @PostMapping()
     @ApiResponse(responseCode = "201", description = "User wurde angelegt")
     @ApiResponse(responseCode = "400", description = "Ungültige Eingabe")
-    ResponseEntity<User> newUser(@RequestBody final User user){
+    ResponseEntity<User> newUser(@Valid @RequestBody final User user){
         User newUser = userService.createUser(user);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

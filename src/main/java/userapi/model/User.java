@@ -2,6 +2,8 @@ package userapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -21,9 +23,12 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
+    @NotBlank
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
 }
