@@ -1,0 +1,8 @@
+services:
+  lumaserv:
+    container_name: lumaserv
+    build:
+      context: .
+      dockerfile: h2.dockerfile
+    ports:
+      - "9092:9092"
